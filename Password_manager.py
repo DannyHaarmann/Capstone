@@ -194,7 +194,13 @@ def wind2_from_star():
     generate_button.pack(pady=6)
 
     # Label to display the generated password
-    password_label = ctk.CTkLabel(windowEntry.EWindow, text="", font=('Simple bold Jut Out', 12))
+    password_label = ctk.CTkTextbox(
+        windowEntry.EWindow,
+        font=('Simple bold Jut Out', 12),
+        width=300,
+        height=25,
+        wrap="word"
+    )
     password_label.pack(pady=6)
 
     Quit = ctk.CTkButton(windowEntry.EWindow, text="Close", command=close_wind2)
@@ -279,14 +285,22 @@ def wind2():
 
     def generate_and_display_password():
         generated_password = generate_strong_password()
-        # Display the generated password in a Label
-        password_label.configure(text=f"Generated Password: {generated_password}")
+        password_label.configure(state="normal")  # Temporarily set it to normal to modify text
+        password_label.delete("1.0", ctk.END)  # Clear any previous text
+        password_label.insert("1.0", f"Generated Password: {generated_password}")  # Insert the new password
+        password_label.configure(state="disabled")
 
     generate_button = ctk.CTkButton(windowEntry.EWindow, text="Generate Password", command=generate_and_display_password)
     generate_button.pack(pady=6)
 
     # Label to display the generated password
-    password_label = ctk.CTkLabel(windowEntry.EWindow, text="", font=('Simple bold Jut Out', 12))
+    password_label = ctk.CTkTextbox(
+        windowEntry.EWindow,
+        font=('Simple bold Jut Out', 12),
+        width=300,
+        height=25,
+        wrap="word"
+    )
     password_label.pack(pady=6)
 
     Quit = ctk.CTkButton(windowEntry.EWindow, text="Close", command=close_wind2)
@@ -418,8 +432,18 @@ def viewPage():
 
         if found_account:
             account_info = f"Account: {found_account['account']}, Username: {found_account['username']}, Password: {found_account['password']}"
-            conLb = ctk.CTkLabel(master=view.scroll, text=account_info, font=('Simple bold Jut Out', 15))
-            conLb.pack()
+            conLb = ctk.CTkTextbox(
+                master=view.scroll,
+                font=('Simple bold Jut Out', 15),
+                width=500,
+                height=100,  # Adjust the height as needed
+                wrap="word"  # Ensure text wraps nicely if it's long
+            )
+            conLb.pack(pady=6)
+            conLb.configure(state="normal")  # Temporarily make it editable
+            conLb.delete("1.0", ctk.END)  # Clear any previous content
+            conLb.insert("1.0", account_info)  # Insert the new account info
+            conLb.configure(state="disabled")
         else:
             not_found_label = ctk.CTkLabel(master=view.scroll, text=f"Account '{search_term}' not found",
                                            font=('Simple bold Jut Out', 15), foreground='red')

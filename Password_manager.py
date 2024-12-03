@@ -24,14 +24,11 @@ def hide_file(file_path):
     FILE_ATTRIBUTE_HIDDEN = 0x02
     ctypes.windll.kernel32.SetFileAttributesW(file_path, FILE_ATTRIBUTE_HIDDEN)
 
-import os
+def show_file(file_path):
+    # Set the file attribute to normal (not hidden)
+    FILE_ATTRIBUTE_NORMAL = 0x80
+    ctypes.windll.kernel32.SetFileAttributesW(file_path, FILE_ATTRIBUTE_NORMAL)
 
-def lock_file(file_path):
-    """Restrict access to the file by modifying its permissions."""
-    os.system(f'icacls "{file_path}" /deny Everyone:F')
-
-def unlock_file(file_path):
-    os.system(f'icacls "{file_path}" /grant Everyone:F')
 
 # Functions
 def setup_master_password():
@@ -47,8 +44,7 @@ def setup_master_password():
 
     # If no master password is found, initiate first-time setup
     int_start.setup_window = ctk.CTk()
-    unlock_file('super_secret')
-    unlock_file('master_password.json')
+
     StartLb = ctk.CTkLabel(int_start.setup_window,
                            text="This is your first time start up.\n Please input what you want the master "
                                 "password to be.\n Once you input this it can not be changed!",
@@ -83,7 +79,7 @@ def submit_master_password(master_password, setup_window):
         data = {"master_password": master_password}
         with open('master_password.json', 'w') as file:
             json.dump(data, file)
-            hide_file('super_secret')
+            hide_file('Pass.json')
             hide_file('master_password.json')
         wind2_from_star()
 
@@ -119,8 +115,7 @@ def generate_strong_password(length=12):
 def wind2_from_star():
     int_start.setup_window.destroy()
     windowEntry.EWindow = ctk.CTk()
-    unlock_file('super_secret')
-    unlock_file('master_password.json')
+
     # setting tkinter window size
     width = 600  # Width
     height = 500  # Height
@@ -150,7 +145,7 @@ def wind2_from_star():
 
 
     def save():
-        unlock_file("password.json")
+        show_file('Pass.json')
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -161,12 +156,12 @@ def wind2_from_star():
             "username": saveUser
         }
 
-        json_file_path = "super_secret"
+        json_file_path = "Pass.json"
         save_to_json_file(json_file_path, data_to_save)
         test()
 
     def save_to_json_file(file_path, new_data):
-        unlock_file("password.json")
+
         try:
             # Try to read existing data from the file
             with open(file_path, 'r') as file:
@@ -181,7 +176,7 @@ def wind2_from_star():
         # Write the updated data back to the JSON file
         with open(file_path, 'w') as file:
             json.dump(existing_data, file, indent=4)
-        hide_file('super_secret')
+        hide_file('Pass.json')
         hide_file('master_password.json')
 
     subBt = ctk.CTkButton(windowEntry.EWindow, text="Submit new account ", command=save)
@@ -243,7 +238,7 @@ def wind2():
 
 
     def save():
-        unlock_file("password.json")
+        show_file('Pass.json')
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -254,12 +249,12 @@ def wind2():
             "username": saveUser
         }
 
-        json_file_path = "super_secret"
+        json_file_path = "Pass.json"
         save_to_json_file(json_file_path, data_to_save)
         test()
 
     def save_to_json_file(file_path, new_data):
-        unlock_file("password.json")
+
         try:
             # Try to read existing data from the file
             with open(file_path, 'r') as file:
@@ -304,7 +299,7 @@ def wind2():
 
 def test():
     messagebox.showinfo("Submission", "Account added")
-    hide_file('super_secret')
+    hide_file('super_secret.json')
     hide_file('master_password.json')
 
 
@@ -337,7 +332,7 @@ def Edit():
         global answer
         searchText = SearchAccount.get()
         substr = searchText.lower()  # Substring to search for.
-        with open('super_secret', 'rt') as myfile:
+        with open('Pass.json', 'rt') as myfile:
             for line in myfile:
                 lineNum += 1
                 if line.lower().find(substr) != -1:  # if case-insensitive match,
@@ -388,7 +383,7 @@ def Edit():
         }
         print(f"Acc_lookup: {acc_lookup}")
         print(f"New Data: {new_data}")
-        update_user('super_secret', SearchAccount.get(), new_data)
+        update_user('Pass.json', SearchAccount.get(), new_data)
 
     subBt = ctk.CTkButton(edit.editWindow, text="Submit Changes ", font=('Simple bold Jut Out', 12),
                           command=test_script)
@@ -428,7 +423,7 @@ def viewPage():
                                            font=('Simple bold Jut Out', 15), foreground='red')
             not_found_label.pack()
 
-    with open('super_secret.json', 'r') as file:
+    with open('Pass.json', 'r') as file:
         data = json.load(file)
         accounts = data.get('Accounts', [])
 
@@ -461,6 +456,7 @@ def viewPage():
 def close_view():
     result = messagebox.askokcancel("Confirmation", "Are you sure you want to close the application?")
     if result:
+        hide_file('Pass.json')
         view.VWindow.destroy()
         os.system("taskkill /F /PID {}".format(os.getpid()))
 
@@ -505,8 +501,7 @@ def close_wind2():
 def close_edit():
     result = messagebox.askokcancel("Confirmation", "Are you sure you want to close the application?")
     if result:
-        #lock_file('password.json')
-        #lock_file('master_password.json')
+        hide_file('Pass.json')
         edit.editWindow.destroy()
         os.system("taskkill /F /PID {}".format(os.getpid()))
 
@@ -542,7 +537,7 @@ def back_from_edit():
     passadd.pack(pady=2)
 
     def save():
-        unlock_file("password.json")
+        show_file('Pass.json')
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -553,12 +548,12 @@ def back_from_edit():
             "username": saveUser
         }
 
-        json_file_path = "password.json"
+        json_file_path = "Pass.json"
         save_to_json_file(json_file_path, data_to_save)
         test()
 
     def save_to_json_file(file_path, new_data):
-        unlock_file("password.json")
+
         try:
             # Try to read existing data from the file
             with open(file_path, 'r') as file:
@@ -620,7 +615,7 @@ def back_from_view():
     passadd.pack(pady=2)
 
     def save():
-        unlock_file("password.json")
+        show_file('Pass.json')
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -631,12 +626,12 @@ def back_from_view():
             "username": saveUser
         }
 
-        json_file_path = "password.json"
+        json_file_path = "Pass.json"
         save_to_json_file(json_file_path, data_to_save)
         test()
 
     def save_to_json_file(file_path, new_data):
-        unlock_file("password.json")
+
         try:
             # Try to read existing data from the file
             with open(file_path, 'r') as file:
@@ -878,15 +873,14 @@ def main():
     ##second_key()
     register_hotkey()
     second_key()
-    hide_file('password.json')
+    hide_file('pass.json')
     hide_file('master_password.json')
-    unlock_file('password.json')
-    unlock_file('master_password.json')
 
     run()
 
 if __name__ == "__main__":
     main()
+
 
 
 

@@ -79,8 +79,7 @@ def submit_master_password(master_password, setup_window):
         data = {"master_password": master_password}
         with open('master_password.json', 'w') as file:
             json.dump(data, file)
-            hide_file('Pass.json')
-            hide_file('master_password.json')
+
         wind2_from_star()
 
 
@@ -145,7 +144,7 @@ def wind2_from_star():
 
 
     def save():
-        show_file('Pass.json')
+
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -176,8 +175,7 @@ def wind2_from_star():
         # Write the updated data back to the JSON file
         with open(file_path, 'w') as file:
             json.dump(existing_data, file, indent=4)
-        hide_file('Pass.json')
-        hide_file('master_password.json')
+
 
     subBt = ctk.CTkButton(windowEntry.EWindow, text="Submit new account ", command=save)
     subBt.pack(pady=6)
@@ -238,7 +236,7 @@ def wind2():
 
 
     def save():
-        show_file('Pass.json')
+
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -384,6 +382,7 @@ def Edit():
         print(f"Acc_lookup: {acc_lookup}")
         print(f"New Data: {new_data}")
         update_user('Pass.json', SearchAccount.get(), new_data)
+        test2()
 
     subBt = ctk.CTkButton(edit.editWindow, text="Submit Changes ", font=('Simple bold Jut Out', 12),
                           command=test_script)
@@ -395,6 +394,9 @@ def Edit():
                          command=close_edit)
     Quit.pack(pady=8)
     edit.editWindow.mainloop()
+
+def test2():
+    messagebox.showinfo("Submission", "Account changed")
 
 
 def viewPage():
@@ -456,7 +458,7 @@ def viewPage():
 def close_view():
     result = messagebox.askokcancel("Confirmation", "Are you sure you want to close the application?")
     if result:
-        hide_file('Pass.json')
+
         view.VWindow.destroy()
         os.system("taskkill /F /PID {}".format(os.getpid()))
 
@@ -501,7 +503,7 @@ def close_wind2():
 def close_edit():
     result = messagebox.askokcancel("Confirmation", "Are you sure you want to close the application?")
     if result:
-        hide_file('Pass.json')
+
         edit.editWindow.destroy()
         os.system("taskkill /F /PID {}".format(os.getpid()))
 
@@ -537,7 +539,7 @@ def back_from_edit():
     passadd.pack(pady=2)
 
     def save():
-        show_file('Pass.json')
+
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -615,7 +617,7 @@ def back_from_view():
     passadd.pack(pady=2)
 
     def save():
-        show_file('Pass.json')
+
         saveacc = accountAdd.get()
         savepass = passadd.get()
         saveUser = accountUser.get()
@@ -873,14 +875,12 @@ def main():
     ##second_key()
     register_hotkey()
     second_key()
-    hide_file('pass.json')
-    hide_file('master_password.json')
+
 
     run()
 
 if __name__ == "__main__":
     main()
-
 
 
 
